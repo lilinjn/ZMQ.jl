@@ -10,6 +10,12 @@ using Base.Libdl, Base.Libc
 using Base.Libdl: dlopen_e
 using Base.Libc: EAGAIN
 
+import LilConda: ensure_conda
+using PackagePrelude:  libfile
+
+ensure_conda("zeromq", v"4.1.3")
+
+
 if VERSION >= v"0.5.0-dev+1229"
     import Base.Filesystem: UV_READABLE, uv_pollcb
 else
@@ -19,12 +25,7 @@ else
     end
 end
 
-const depfile = joinpath(dirname(@__FILE__),"..","deps","deps.jl")
-if isfile(depfile)
-    include(depfile)
-else
-    error("ZMQ not properly installed. Please run Pkg.build(\"ZMQ\")")
-end
+const zmq = libfile("zmq")
 
 import Base:
     convert, get, bytestring,
